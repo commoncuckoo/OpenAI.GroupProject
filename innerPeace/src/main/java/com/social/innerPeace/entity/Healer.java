@@ -1,9 +1,10 @@
 package com.social.innerPeace.entity;
 
+import com.social.innerPeace.ip_enum.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +17,9 @@ import java.util.List;
 @ToString(exclude = {"followerList","followingList","postList"})
 public class Healer extends BaseEntity{
     @Id
+    @Column(name = "healer_email")
     private String healer_email;
 
-    @Column(length = 30,nullable = false)
     private String healer_pw;
 
     @Column(length = 50,nullable = false)
@@ -36,17 +37,21 @@ public class Healer extends BaseEntity{
     private String healer_randomcode;
 
     @Column(length = 30, nullable = false)
-    private String healer_nickname;
+    private String healerNickName;
 
     @Column(length = 1)
     private String healer_gender;
 
-    private LocalDateTime healer_bitrh;
+    private LocalDate healer_bitrh;
 
     @Column(length = 400)
     private String healer_statusmessage;
 
     private boolean ad_agree;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
     @Builder.Default
     @OneToMany(mappedBy = "follower",cascade = CascadeType.ALL)

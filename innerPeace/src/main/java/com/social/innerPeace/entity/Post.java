@@ -2,6 +2,7 @@ package com.social.innerPeace.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,19 +17,17 @@ import java.util.List;
 public class Post extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long post_no;
-
-    @Column(length = 50,nullable = false)
-    private String post_title;
+    @JoinColumn(name = "post_no")
+    private Long postNo;
 
     @Column(length = 1500,nullable = false)
     private String post_content;
 
     private String post_image;
 
-    private int map_point_lat;
+    private float map_point_lat;
 
-    private int map_point_lng;
+    private float map_point_lng;
 
     @ElementCollection(fetch = FetchType.LAZY)
     private List<String> tags;

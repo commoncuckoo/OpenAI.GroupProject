@@ -1,40 +1,45 @@
 package com.social.innerPeace.user.account.service;
 
-import com.social.innerPeace.dto.SignupDTO;
+import com.social.innerPeace.ip_enum.Role;
+import com.social.innerPeace.dto.HealerDTO;
 import com.social.innerPeace.entity.Healer;
 import com.social.innerPeace.repository.HealerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserAccountServiceImpl implements UserAccountService{
-    private final HealerRepository healerRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private HealerRepository healerRepository;
+
     @Override
-    public Object findByEmail(String email) {
+    public String register(HealerDTO dto, Role role) {
+        if(healerRepository.findById(dto.getHealer_email()).isPresent()){
+            return "duplicated";
+        }
+        Healer healer = dtoToEntity(dto);
+        healer.setHealerNickName(dto.getHealer_email());
+        healer.setHealer_pw(passwordEncoder.encode(dto.getHealer_pw()));
+        healer.setRole(role);
+        healer = healerRepository.save(healer);
+        return healer.getHealer_email();
+    }
+
+    @Override
+    public HealerDTO compareByEmail(String email) {
         Optional<Healer> optionalHealer = healerRepository.findById(email);
         if(optionalHealer.isPresent()){
             Healer healer = optionalHealer.get();
             healer = healerRepository.save(healer);
             return entityToDto(healer);
         }
-        return null;
-    }
-
-    @Override
-    public String register(SignupDTO dto) {
-        if(healerRepository.findById(dto.getEmail()).isPresent()){
-            return null;
-        }
-        Healer healer = dtoToEntity(dto);
-        healer.setHealer_nickname(dto.getEmail());
-        healer = healerRepository.save(healer);
-        return healer.getHealer_email();
-    }
-
-    @Override
-    public SignupDTO login(SignupDTO dto) {
         return null;
     }
 }
